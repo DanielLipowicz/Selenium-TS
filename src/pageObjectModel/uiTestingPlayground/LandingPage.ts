@@ -1,9 +1,9 @@
-import {Browser} from "../../util/Browser";
+import {BaseBrowser} from "../../util/BaseBrowser";
 import {By} from "selenium-webdriver";
 import {BasePage} from "../BasePage";
 
 export class LandingPage extends BasePage{
-    constructor(browser: Browser) {
+    constructor(browser: BaseBrowser) {
        super(browser);
     }
 
@@ -11,6 +11,10 @@ export class LandingPage extends BasePage{
     private eventBasedClickSubpageElement:By = By.xpath("//h3/a[contains(text(),\"Click\")]");
 
     public async clickOnEventBasedClickSubpage() {
-        await this.browser.clickElement(this.eventBasedClickSubpageElement())
+        await this.browser.clickElement(this.eventBasedClickSubpageElement);
+    }
+
+    async waitForPageLoaded() {
+        await this.browser.waitForElementsLocated([this.eventBasedClickSubpageElement])
     }
 }

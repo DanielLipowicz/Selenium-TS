@@ -1,20 +1,27 @@
+import {BaseBrowser} from "../../util/BaseBrowser";
+import {By, until} from "selenium-webdriver";
 import {BasePage} from "../BasePage";
-import {Browser} from "../../util/Browser";
 
 export class ClickPage extends BasePage {
-    constructor(browser: Browser) {
+    constructor(browser: BaseBrowser) {
         super(browser);
     }
 
     url = "http://uitestingplayground.com/click";
-    private notClickedButton = () => this.browser.findElement('.btn.btn-primary');
-    private clickedButton = () => this.browser.findElement('.btn.btn-success');
+    private headerElement: By = By.xpath('//h3[contains(text(),"Click")]');
+    private notClickedButton: By = By.css('.btn.btn-primary');
+    private clickedButton: By = By.css('.btn.btn-success');
 
     public async clickOnNotClickedButton() {
-        await this.browser.clickElement(this.notClickedButton());
+        await this.browser.clickElement(this.notClickedButton);
+        await this.browser.waitForPageLoaded();
     }
 
     public async isClickedButtonPresent() {
-        return await this.clickedButton().isDisplayed();
+        return await this.browser.isElementDisplayed(this.clickedButton);
+    }
+
+    async waitForPageLoaded() {
+        await this.browser.waitForElementsLocated([this.headerElement]);
     }
 }

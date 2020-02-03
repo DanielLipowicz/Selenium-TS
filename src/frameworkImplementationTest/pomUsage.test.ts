@@ -1,9 +1,9 @@
-import {baseSetup, Browser} from "../util/Browser";
+import {baseSetup, BaseBrowser} from "../util/BaseBrowser";
 // @ts-ignore
 import {LandingPage} from '../pageObjectModel/uiTestingPlayground/LandingPage';
 import {ClickPage} from "../pageObjectModel/uiTestingPlayground/ClickPage";
 
-let browser: Browser;
+let browser: BaseBrowser;
 beforeAll(async () => {
     browser = await baseSetup();
 });
@@ -23,8 +23,10 @@ describe("Page object model should be used directly in test", () => {
     it("Transition between two pages should works smoothly", async (done)=>{
         let landingPage:LandingPage = new LandingPage(await browser);
         await landingPage.navigate();
+        await landingPage.waitForPageLoaded();
         await landingPage.clickOnEventBasedClickSubpage();
         let clickPage:ClickPage = new ClickPage(landingPage.browser);
+        await clickPage.waitForPageLoaded();
         expect(clickPage.isUrlValid()).toBeTruthy();
         await clickPage.clickOnNotClickedButton();
         expect(clickPage.isClickedButtonPresent()).toBeTruthy();

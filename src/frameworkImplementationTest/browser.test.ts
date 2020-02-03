@@ -1,4 +1,4 @@
-import {Browser, baseSetup} from "../util/Browser";
+import {BaseBrowser, baseSetup} from "../util/BaseBrowser";
 import {By, Capabilities} from "selenium-webdriver";
 
 /**
@@ -7,7 +7,7 @@ import {By, Capabilities} from "selenium-webdriver";
  * It include example configuration for browser for all tests
  */
 
-let browser: Browser;
+let browser: BaseBrowser;
 beforeAll(async () => {
     browser = await baseSetup();
 });
@@ -15,9 +15,9 @@ afterAll(async () => {
     await browser.close()
 });
 describe("browser should be initiated - how to initialised webdriver using this framework", () => {
-    let browser: Browser;
+    let browser: BaseBrowser;
     it('Browser object should be initialised with success when "webdriver manager" is started on system in the background - that required pre-configuration on operation system', () => {
-        browser = new Browser();
+        browser = new BaseBrowser();
         expect(browser.driver).toBeDefined();
     });
     it("Browser should be set up (from previous test) and able to connect with some URL", async () => {
@@ -28,7 +28,7 @@ describe("browser should be initiated - how to initialised webdriver using this 
         }
     });
     it("Initiated browser should have access to driver", async () => {
-        browser = new Browser();
+        browser = new BaseBrowser();
         const driverCapabilities: Capabilities = await browser.driver.getCapabilities();
         console.log(driverCapabilities);
         expect(driverCapabilities).toBeDefined();

@@ -1,20 +1,12 @@
-import {
-    Builder,
-    ThenableWebDriver,
-    By,
-    WebElementPromise,
-    Capabilities,
-    Condition, WebDriver, until, WebElement
-} from 'selenium-webdriver';
-import {Command} from "selenium-webdriver/lib/command";
+import {Builder, By, Capabilities, ThenableWebDriver, until, WebElement, WebElementPromise} from 'selenium-webdriver';
 
 export async function baseSetup() {
-    const baseBrowser = await new Browser();
-    jest.setTimeout(20000);
-    return baseBrowser;
+    const browser = await new BaseBrowser();
+    jest.setTimeout(200000);
+    return browser;
 }
 
-export class Browser {
+export class BaseBrowser {
     public driver: ThenableWebDriver;
 
     public constructor() {
@@ -34,11 +26,15 @@ export class Browser {
 
         async function isJsCompleted(): Promise<boolean> {
             let readyStateIsComplete = false;
+            let jQueryActiveComplete = false;
             while (!readyStateIsComplete) {
                 let scriptResult = await driver.executeScript("return document.readyState");
+                let jQueryActive = await driver.executeScript("return jQuery.active");
                 readyStateIsComplete = scriptResult === "complete";
+                jQueryActiveComplete = jQueryActive === 0 ;
                 console.log(`ready state: ${readyStateIsComplete} \nscriptResult: ${scriptResult}`);
-                !readyStateIsComplete ? await driver.sleep(100) : {}
+                console.log(`jQuery state: ${jQueryActiveComplete} \nscriptResult: ${jQueryActive}`);
+                !readyStateIsComplete && !jQueryActiveComplete ? await driver.sleep(100) : {}
             }
             return readyStateIsComplete;
         }
@@ -49,11 +45,25 @@ export class Browser {
     public findElement(selector: string): WebElementPromise {
         return this.driver.findElement(By.css(selector));
     }
+    public async isElementDisplayed(selector: By): Promise<boolean> {
+        await this.waitForElementsLocated([selector]);
+        return await this.driver.findElement(selector).isDisplayed();
+    }
 
     public async clickElement(selector: By) {
-        await this.driver.wait(until.elementLocated(selector));
-        const element:WebElement =await this.driver.findElement(selector);
-        await element.click();
+        await this.waitForElementsLocated([selector]);
+        await this.driver.findElement(selector).click();
+        console.log(`element was clicked ${selector}`);
+    }
+    /**
+     * method enforce browser to wait for all required elements
+     * @param selectors precise which elements are required on page
+     * @param timeout allow to set individual timeout for all elements
+     */
+    public async waitForElementsLocated(selectors:By[], timeout:number=5000){
+        for (const selector of selectors) {
+            await this.driver.wait(until.elementLocated(selector), timeout, `Required element is not present on page ${selectors}`);
+        }
     }
 
     public async clearCookies(url?: string): Promise<void> {
