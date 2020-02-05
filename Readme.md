@@ -1,4 +1,4 @@
-#TypeScript and Selenium demo project
+# TypeScript and Selenium demo project
 ## Requirements
 - Node and npm
 - Selenium grid server or local instance of webdriver manager
