@@ -16,6 +16,15 @@ Webdriver manager served on localhost require browser valid with webdriver drive
 - Inside scenario script include only actions and assertions
 - All interactions with web page should be performed via PageObject (Single Responsibility principle)
 
+# Repository structure
+- src - contain all source code
+    - pom - is dedicated for Page Object Model
+    - test - contains all test (framework test included)
+        - framework implementation describe features provided in this repo
+    - util - provide 'core' functionality of this repo - selenium webdriver configuration 
+        - BaseBrowser - it's main class - provide browser functionaries
+        - browserUtil - extend browser functionality and make browser class more readable
+
 #Link references
 - [webdriver-manager](https://www.npmjs.com/package/webdriver-manager)
 - [selenium-webdriver documentation](https://selenium.dev/documentation/en/)
