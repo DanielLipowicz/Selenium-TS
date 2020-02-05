@@ -1,7 +1,7 @@
 {
   "name": "seleniumts-demo",
   "version": "0.1.0",
-  "description": "Demo for Selenim and typescript",
+  "description": "Demo for Selenium and typescript",
   "main": "index.js",
   "scripts": {
     "test": "jest"
@@ -13,17 +13,27 @@
     ]
   },
   "keywords": [
-    "selenium"
+    "selenium",
+    "typescript",
+    "webdriver",
+    "uitest"
   ],
   "author": "Daniel Lipowicz",
   "license": "ISC",
   "devDependencies": {
     "@babel/preset-typescript": "^7.8.3",
     "@types/jest": "^25.1.1",
+    "@types/node": "^13.7.0",
     "@types/selenium-webdriver": "^4.0.6",
+    "dotenv": "^8.2.0",
     "jest": "^25.1.0",
+    "pino-pretty": "^3.5.0",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "ts-jest": "^25.1.0",
     "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "@types/pino": "^5.15.4",
+    "pino": "^5.16.0"
   }
 }

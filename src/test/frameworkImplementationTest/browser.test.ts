@@ -1,4 +1,4 @@
-import {BaseBrowser, baseSetup} from "../util/BaseBrowser";
+import {BaseBrowser, baseSetup} from "../../util/BaseBrowser";
 import {By, Capabilities} from "selenium-webdriver";
 
 /**

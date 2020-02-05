@@ -1,7 +1,7 @@
-import {baseSetup, BaseBrowser} from "../util/BaseBrowser";
+import {baseSetup, BaseBrowser} from "../../util/BaseBrowser";
 // @ts-ignore
-import {LandingPage} from '../pageObjectModel/uiTestingPlayground/LandingPage';
-import {ClickPage} from "../pageObjectModel/uiTestingPlayground/ClickPage";
+import {LandingPage} from '../../pom/uiTestingPlayground/LandingPage';
+import {ClickPage} from "../../pom/uiTestingPlayground/ClickPage";
 
 let browser: BaseBrowser;
 beforeAll(async () => {

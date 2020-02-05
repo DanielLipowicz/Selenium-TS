@@ -15,6 +15,6 @@ export class LandingPage extends BasePage{
     }
 
     async waitForPageLoaded() {
-        await this.browser.waitForElementsLocated([this.eventBasedClickSubpageElement])
+        await this.browser.waitForElementsOnPage([this.eventBasedClickSubpageElement])
     }
 }

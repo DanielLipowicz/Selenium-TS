@@ -1,5 +1,5 @@
 import {BaseBrowser} from "../../util/BaseBrowser";
-import {By, until} from "selenium-webdriver";
+import {By} from "selenium-webdriver";
 import {BasePage} from "../BasePage";
 
 export class ClickPage extends BasePage {
@@ -22,6 +22,6 @@ export class ClickPage extends BasePage {
     }
 
     async waitForPageLoaded() {
-        await this.browser.waitForElementsLocated([this.headerElement]);
+        await this.browser.waitForElementsOnPage([this.headerElement]);
     }
 }

@@ -1,4 +1,8 @@
-import {Builder, By, Capabilities, ThenableWebDriver, until, WebElement, WebElementPromise} from 'selenium-webdriver';
+import {Builder, By, Capabilities, ThenableWebDriver, WebElementPromise} from 'selenium-webdriver';
+import {waitForElementsLocated, waitForPageLoaded as waitForPage} from "./browserUtil/wait";
+import {logger} from "./logger";
+
+const log = logger;
 
 export async function baseSetup() {
     const browser = await new BaseBrowser();
@@ -12,7 +16,7 @@ export class BaseBrowser {
     public constructor() {
         const capabilities = Capabilities.chrome();
         this.driver = new Builder()
-            .usingServer('http://localhost:4444/wd/hub')
+            .usingServer(process.env.WEBDRIVER_SERVER||'http://localhost:4444/wd/hub')
             .withCapabilities(capabilities)
             .build();
     }
@@ -21,49 +25,25 @@ export class BaseBrowser {
         await this.driver.navigate().to(url);
     }
 
-    public async waitForPageLoaded() {
-        let driver = this.driver;
-
-        async function isJsCompleted(): Promise<boolean> {
-            let readyStateIsComplete = false;
-            let jQueryActiveComplete = false;
-            while (!readyStateIsComplete) {
-                let scriptResult = await driver.executeScript("return document.readyState");
-                let jQueryActive = await driver.executeScript("return jQuery.active");
-                readyStateIsComplete = scriptResult === "complete";
-                jQueryActiveComplete = jQueryActive === 0 ;
-                console.log(`ready state: ${readyStateIsComplete} \nscriptResult: ${scriptResult}`);
-                console.log(`jQuery state: ${jQueryActiveComplete} \nscriptResult: ${jQueryActive}`);
-                !readyStateIsComplete && !jQueryActiveComplete ? await driver.sleep(100) : {}
-            }
-            return readyStateIsComplete;
-        }
-
-        console.log(await isJsCompleted());
-    }
+    public waitForPageLoaded = async () => await waitForPage(this.driver);
+    public waitForElementsOnPage = async(elements:By[],timeout?:number) =>{
+        await this.waitForPageLoaded();
+        await waitForElementsLocated(this.driver,elements,timeout);
+    };
 
     public findElement(selector: string): WebElementPromise {
         return this.driver.findElement(By.css(selector));
     }
+
     public async isElementDisplayed(selector: By): Promise<boolean> {
-        await this.waitForElementsLocated([selector]);
+        await waitForElementsLocated(this.driver, [selector]);
         return await this.driver.findElement(selector).isDisplayed();
     }
 
     public async clickElement(selector: By) {
-        await this.waitForElementsLocated([selector]);
+        await waitForElementsLocated(this.driver, [selector]);
         await this.driver.findElement(selector).click();
-        console.log(`element was clicked ${selector}`);
-    }
-    /**
-     * method enforce browser to wait for all required elements
-     * @param selectors precise which elements are required on page
-     * @param timeout allow to set individual timeout for all elements
-     */
-    public async waitForElementsLocated(selectors:By[], timeout:number=5000){
-        for (const selector of selectors) {
-            await this.driver.wait(until.elementLocated(selector), timeout, `Required element is not present on page ${selectors}`);
-        }
+        log.info(`element was clicked ${selector}`);
     }
 
     public async clearCookies(url?: string): Promise<void> {
