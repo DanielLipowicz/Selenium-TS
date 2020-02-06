@@ -11,16 +11,19 @@ afterAll(async () => {
     await browser.close()
 });
 describe("Page object model should be used directly in test", () => {
-    it("User should be able to navigate to landing page", async (done) => {
+    it("Empty page should not crash wait function", async () => {
+        expect(await browser).toBeDefined();
+        await browser.waitForPageLoaded();
+    });
+    it("User should be able to navigate to landing page", async () => {
         expect(await browser).toBeDefined();
         let landingPage: LandingPage = new LandingPage(await browser);
         await landingPage.navigate();
         await landingPage.clickOnEventBasedClickSubpage();
         await landingPage.browser.waitForPageLoaded();
         expect(await landingPage.isUrlValid()).toBeFalsy();
-        done();
     });
-    it("Transition between two pages should works smoothly", async (done)=>{
+    it("Transition between two pages should works smoothly", async ()=>{
         let landingPage:LandingPage = new LandingPage(await browser);
         await landingPage.navigate();
         await landingPage.waitForPageLoaded();
@@ -31,6 +34,5 @@ describe("Page object model should be used directly in test", () => {
         await clickPage.clickOnNotClickedButton();
         expect(clickPage.isClickedButtonPresent()).toBeTruthy();
         await browser.driver.sleep(3000);
-        done();
     })
 });

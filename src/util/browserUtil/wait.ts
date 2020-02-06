@@ -1,5 +1,6 @@
 import {By, ThenableWebDriver, until} from "selenium-webdriver";
 import {logger} from "../logger";
+
 const log = logger;
 
 /**
@@ -20,7 +21,7 @@ export async function waitForPageLoaded(driver: ThenableWebDriver) {
     let jQueryActiveComplete = false;
     while (!readyStateIsComplete) {
         let scriptResult = await driver.executeScript("return document.readyState");
-        let jQueryActive = await driver.executeScript("return jQuery.active");
+        let jQueryActive = await driver.executeScript("return typeof(jQuery) !=='undefined' ? jQuery.active:true");
         readyStateIsComplete = scriptResult === "complete";
         jQueryActiveComplete = jQueryActive === 0;
         log.info(`\nready state: ${readyStateIsComplete} \nscriptResult: ${scriptResult}`);
