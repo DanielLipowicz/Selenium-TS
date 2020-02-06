@@ -42,8 +42,32 @@ export class BaseBrowser {
 
     public async clickElement(selector: By) {
         await waitForElementsLocated(this.driver, [selector]);
+        await this.validateSingleElementSelector(selector);
         await this.driver.findElement(selector).click();
         log.info(`element was clicked ${selector}`);
+    }
+
+    /**
+     * Click at n-element of selector
+     * @param selector
+     * @param positionNumberOfElementToClick n-order of element counted from 0
+     */
+    public async clickFromElements(selector:By, positionNumberOfElementToClick:number) {
+        await waitForElementsLocated(this.driver,[selector]);
+        await (await this.driver.findElements(selector))[positionNumberOfElementToClick].click();
+        log.info(`${positionNumberOfElementToClick} element was clicked ${selector}`);
+    }
+
+    /**
+     * Method validate that there is only one element on page which fit to selector
+     * Method will print error message because user should use unique selector for picking element.
+     * If there is need to click n-element from element list, then there is no need to validate if selector are distinct
+     * @param selector
+     */
+    private async validateSingleElementSelector(selector:By){
+        const numberOfElements =  (await this.driver.findElements(selector)).length;
+        numberOfElements>1?log.error(`Found more than one element fit to selector: ${selector} Ensure that selector is valid. First element will be used in test.`):{};
+        return numberOfElements
     }
 
     public async clearCookies(url?: string): Promise<void> {
